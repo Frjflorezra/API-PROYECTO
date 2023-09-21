@@ -5,10 +5,10 @@ from sqlalchemy.sql.sqltypes import Integer, String
 users = Table(
     "users",
     meta,
-    Column("id_usuario", Integer, primary_key=True),
-    Column("nombre", String(255)),
-    Column("apellido", String(255)),
-    Column("correo", String(100)),
+    Column("id_user", Integer, primary_key=True),
+    Column("name", String(255)),
+    Column("lastname", String(255)),
+    Column("email", String(100)),
     Column("password", String(255)),
 )
 

@@ -3,11 +3,12 @@ from typing import Optional
 
 
 class User(BaseModel):
-    id_usuario:Optional[str]
-    nombre:str
-    apellido:str
-    correo:str
+    id_user:Optional[str]
+    name:str
+    lastname:str
+    email:str
     password:str
+
 
 
 
