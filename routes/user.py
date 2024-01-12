@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import Form, APIRouter, HTTPException, Depends, status
 from datetime import datetime, timedelta
 from typing import Annotated
 from config.db import conn
@@ -36,14 +36,23 @@ estructura = ("id_user", "name", "lastname", "email", "password")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="user/token")
 
-def authenticate_user(email: str, password:str):
-    result = conn.execute(users.select().where(users.c.email == email)).first()
+def authenticate_user(email: str, password: str):
+    print(f"Attempting authentication for user with email: {email}")
+    user = conn.execute(users.select().where(users.c.email == email)).first()
+
+    if user and verify_password(password, user.password):
+        print("Authentication successful")
+        return user
+    else:
+        print("Authentication failed")
+    return None
+
+# def authenticate_user(email: str, password:str):
+#     result = conn.execute(users.select().where(users.c.email == email)).first()
     
-    if not result:
-        return False
-    if not verify_password(password, result.password):
-        return False
-    return result
+#     if result and verify_password(password, result.password):
+#         return result
+#     return None
 
 def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     credentials_exception = HTTPException(
@@ -131,7 +140,7 @@ def login(user: Annotated[OAuth2PasswordRequestForm, Depends()]):
     access_token = create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer", "id_user": user.id_user}
 
 @user.get("/{id_user}")
 def get_user(id_user: int):

@@ -39,6 +39,7 @@ async def create_project(project: Project, current_user: User = Depends(get_curr
 
 @projectBoard.get("/{id}")
 def get_project(id: int, current_user: User = Depends(get_current_user)):
+  if id == current_user.id_user:  
     query = Projects.select().where(Projects.c.id_project == id, Projects.c.id_user == current_user.id_user)
     result = conn.execute(query).first()
     if result is None:
